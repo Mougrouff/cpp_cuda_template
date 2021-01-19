@@ -31,7 +31,7 @@ set(Template_PATCH_VERSION 5)
 set(Template_TWEAK_VERSION 3)
 set(Template_VERSION ${Template_MAJOR_VERSION}.${Template_MINOR_VERSION}.${Template_PATCH_VERSION}.${Template_TWEAK_VERSION})
 
-project(template VERSION ${Template_VERSION})
+project(${ProjectName} VERSION ${Template_VERSION})
 
 enable_language(C)
 enable_language(CXX)
@@ -49,21 +49,18 @@ file(GLOB sources "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
 file(GLOB headers "${CMAKE_CURRENT_LIST_DIR}/include/*.h")
 file(GLOB cuda_sources "${CMAKE_CURRENT_LIST_DIR}/cuda/*.cu")
 
-add_library(template_lib ${sources} ${headers} ${cuda_sources})
-
-#add_subdirectory(src)
-add_subdirectory(test)
+add_library(${ProjectName} ${sources} ${headers} ${cuda_sources})
 
 
 
 if(BUILD_SHARED_LIBS)
-  target_compile_definitions(template_lib PRIVATE LIB_EXPORTS=1)
+  target_compile_definitions(${ProjectName} PRIVATE LIB_EXPORTS=1)
 endif()
 if(BUILD_AS_CPP)
-  set_target_properties(template_lib PROPERTIES LINKER_LANGUAGE CXX)
+  set_target_properties(${ProjectName} PROPERTIES LINKER_LANGUAGE CXX)
 endif()
 
-set_target_properties(template_lib PROPERTIES OUTPUT_NAME "template")
+set_target_properties(${ProjectName} PROPERTIES OUTPUT_NAME "template")
 
 
 
@@ -182,16 +179,21 @@ endif()
 
 
 
-set_target_properties(template_lib PROPERTIES POSITION_INDEPENDENT_CODE ON)
+set_target_properties(${ProjectName} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 if(ENABLE_CUDA)
-  set_target_properties(template_lib PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+  set_target_properties(${ProjectName} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 endif()
 
 
 if(ENABLE_CUDA)
-  target_include_directories(template_lib PUBLIC ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
-  #target_link_libraries(template_lib PRIVATE curand cublas cuda)
-  target_link_libraries(template_lib ${CUDA_LIBRARIES})
-  set_target_properties(template_lib PROPERTIES CUDA_RESOLVE_DEVICE_SYMBOLS ON)
-  target_compile_definitions(template_lib PRIVATE -DGPU)
+  target_include_directories(${ProjectName} PUBLIC ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
+  #target_link_libraries(${ProjectName} PRIVATE curand cublas cuda)
+  target_link_libraries(${ProjectName} ${CUDA_LIBRARIES})
+  set_target_properties(${ProjectName} PROPERTIES CUDA_RESOLVE_DEVICE_SYMBOLS ON)
+  target_compile_definitions(${ProjectName} PRIVATE -DUSE_CUDA)
 endif()
+
+
+
+#add_subdirectory(src)
+add_subdirectory(test)
