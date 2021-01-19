@@ -6,7 +6,7 @@ set(LIB_NAME ${PROJECT_NAME}_lib)
 
 foreach(exec ${EXECUTABLES})
   add_executable(${exec} ${exec}.cpp)
-  target_link_libraries(${exec} ${LIB_NAME})
+  target_link_libraries(${exec} ${LIB_NAME} ${CUDA_LIBRARIES})
 
   if (MSVC)
     target_compile_options(${exec} PRIVATE "/IW4")
